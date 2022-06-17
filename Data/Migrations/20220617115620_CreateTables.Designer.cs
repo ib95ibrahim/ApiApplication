@@ -4,6 +4,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220617115620_CreateTables")]
+    partial class CreateTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -116,6 +118,10 @@ namespace API.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -134,6 +140,8 @@ namespace API.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Persons");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Person");
                 });
 
             modelBuilder.Entity("API.entities.Rapport", b =>
@@ -198,15 +206,18 @@ namespace API.Data.Migrations
                     b.HasBaseType("API.entities.Person");
 
                     b.Property<byte[]>("PasswordHash")
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("Administrator_PasswordHash");
 
                     b.Property<byte[]>("PasswordSalt")
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("Administrator_PasswordSalt");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Administrator_UserName");
 
-                    b.ToTable("Administrators", (string)null);
+                    b.HasDiscriminator().HasValue("Administrator");
                 });
 
             modelBuilder.Entity("API.entities.Employer", b =>
@@ -233,7 +244,7 @@ namespace API.Data.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("Employer", (string)null);
+                    b.HasDiscriminator().HasValue("Employer");
                 });
 
             modelBuilder.Entity("API.entities.Immigrant", b =>
@@ -254,7 +265,7 @@ namespace API.Data.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("Immigrants", (string)null);
+                    b.HasDiscriminator().HasValue("Immigrant");
                 });
 
             modelBuilder.Entity("API.entities.Assistant", b =>
@@ -266,14 +277,14 @@ namespace API.Data.Migrations
 
                     b.HasIndex("ChefEquipeId");
 
-                    b.ToTable("Assistants", (string)null);
+                    b.HasDiscriminator().HasValue("Assistant");
                 });
 
             modelBuilder.Entity("API.entities.ChefEquipe", b =>
                 {
                     b.HasBaseType("API.entities.Employer");
 
-                    b.ToTable("ChefEquipes", (string)null);
+                    b.HasDiscriminator().HasValue("ChefEquipe");
                 });
 
             modelBuilder.Entity("ActivityImmigrant", b =>
@@ -330,23 +341,8 @@ namespace API.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("API.entities.Administrator", b =>
-                {
-                    b.HasOne("API.entities.Person", null)
-                        .WithOne()
-                        .HasForeignKey("API.entities.Administrator", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("API.entities.Employer", b =>
                 {
-                    b.HasOne("API.entities.Person", null)
-                        .WithOne()
-                        .HasForeignKey("API.entities.Employer", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
                     b.HasOne("API.entities.Service", null)
                         .WithMany("Employers")
                         .HasForeignKey("ServiceId");
@@ -354,12 +350,6 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.entities.Immigrant", b =>
                 {
-                    b.HasOne("API.entities.Person", null)
-                        .WithOne()
-                        .HasForeignKey("API.entities.Immigrant", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
                     b.HasOne("API.entities.Location", "Location")
                         .WithMany("Immigrants")
                         .HasForeignKey("LocationId");
@@ -373,22 +363,7 @@ namespace API.Data.Migrations
                         .WithMany("Assistants")
                         .HasForeignKey("ChefEquipeId");
 
-                    b.HasOne("API.entities.Employer", null)
-                        .WithOne()
-                        .HasForeignKey("API.entities.Assistant", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
                     b.Navigation("ChefEquipe");
-                });
-
-            modelBuilder.Entity("API.entities.ChefEquipe", b =>
-                {
-                    b.HasOne("API.entities.Employer", null)
-                        .WithOne()
-                        .HasForeignKey("API.entities.ChefEquipe", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("API.entities.Location", b =>
