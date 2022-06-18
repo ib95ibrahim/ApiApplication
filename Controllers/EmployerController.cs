@@ -52,7 +52,7 @@ public class EmployerController : BaseApiController
     }
     
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<IEnumerable<Employer>>> GetOneEmployer(int id,RegisterEmployerDto employer)
+    public async Task<ActionResult<IEnumerable<Employer>>> UpdateEmployer(int id,RegisterEmployerDto employer)
     {  
         var OldEmployer = await _context.Employers.FindAsync(id);
         
