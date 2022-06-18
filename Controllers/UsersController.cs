@@ -14,13 +14,14 @@ namespace API.Controllers;
         {
             _context = context;
         }
+
         [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
         {
-            return await  _context.Users.ToListAsync();
-            
+            return await  _context.Users.ToListAsync();           
         }
+
         [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<AppUser>> GetUser(int id)
