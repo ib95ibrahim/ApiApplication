@@ -68,7 +68,7 @@ namespace API.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult<Activity>> UpdateActivity(int id, ActivityDto activityDto)
         {
-            var activity = _context.Activities.Find(id);
+            var activity = await _context.Activities.FindAsync(id);
 
             activity.ActivityName = activityDto.ActivityName;
             activity.ActivityDate = activityDto.ActivityDate;
