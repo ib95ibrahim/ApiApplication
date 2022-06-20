@@ -7,6 +7,6 @@ namespace API.DTOs
         public string Nationality { get; set; }
         public string BirthDate { get; set; }
         public string Vulnerability { get; set; }
-        public string LocalId { get; set; }
+        public int LocalId { get; set; }
     }
 }
