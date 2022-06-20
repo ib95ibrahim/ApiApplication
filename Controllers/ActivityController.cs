@@ -71,7 +71,7 @@ namespace API.Controllers
         {
             var activity = await _context.Activities.FindAsync(id);
 
-            activity.ActivityName = activityDto.ActivityName;
+            activity!.ActivityName = activityDto.ActivityName;
             activity.ActivityDate = activityDto.ActivityDate;
             activity.ActivityType = activityDto.ActivityType;
             activity.ActivityPlace = activityDto.ActivityPlace;

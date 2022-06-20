@@ -45,7 +45,7 @@ public class AssistantController : BaseApiController
         using var hmac = new HMACSHA512();
         var assistant = new Assistant
         {
-            EmployerType = assistantDto.TypeEquipe,
+            TypeEquipe = assistantDto.TypeEquipe,
             FirstName = assistantDto.FirstName,
             LastName = assistantDto.LastName,
             Email = assistantDto.Email,
@@ -65,8 +65,7 @@ public class AssistantController : BaseApiController
     {  
         var oldAssistant = await _context.Assistants.FindAsync(id);
         
-        oldAssistant!.EmployerType = assistantDto.EmployerType!;
-        oldAssistant.TypeEquipe = assistantDto.TypeEquipe;
+        oldAssistant!.TypeEquipe = assistantDto.TypeEquipe;
         oldAssistant.FirstName = assistantDto.FirstName;
         oldAssistant.LastName = assistantDto.LastName;
         oldAssistant.Email = assistantDto.Email;
