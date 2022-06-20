@@ -64,8 +64,7 @@ public class ChefEquipeController : BaseApiController
     {  
         var OldchefEquipe = await _context.ChefEquipes.FindAsync(id);
         
-        OldchefEquipe.EmployerType = chefEquipeDto.EmployerType!;
-        OldchefEquipe.TypeEquipe = chefEquipeDto.TypeEquipe;
+        OldchefEquipe!.TypeEquipe = chefEquipeDto.TypeEquipe;
         OldchefEquipe.FirstName = chefEquipeDto.FirstName;
         OldchefEquipe.LastName = chefEquipeDto.LastName;
         OldchefEquipe.Email = chefEquipeDto.Email;
