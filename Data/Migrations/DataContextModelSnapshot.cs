@@ -57,7 +57,7 @@ namespace API.Data.Migrations
                     b.Property<string>("ActivityType")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ChefEquipeId")
+                    b.Property<int>("ChefEquipeId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -295,7 +295,9 @@ namespace API.Data.Migrations
                 {
                     b.HasOne("API.entities.ChefEquipe", "ChefEquipe")
                         .WithMany("Activities")
-                        .HasForeignKey("ChefEquipeId");
+                        .HasForeignKey("ChefEquipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ChefEquipe");
                 });

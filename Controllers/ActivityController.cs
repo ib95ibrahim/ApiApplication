@@ -34,12 +34,14 @@ namespace API.Controllers
         public async Task<ActionResult<ActivityDto>> AddActivity(ActivityDto activityDto)
         {
             
+            
             var activity = new Activity
             {
                 ActivityName = activityDto.ActivityName,
                 ActivityDate = activityDto.ActivityDate,   
                 ActivityType = activityDto.ActivityType,
-                ActivityPlace = activityDto.ActivityPlace
+                ActivityPlace = activityDto.ActivityPlace,
+                ChefEquipeId= activityDto.ChefEquipeId,
             };
 
             _context.Activities.Add(activity);
