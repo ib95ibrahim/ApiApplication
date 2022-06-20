@@ -22,12 +22,12 @@ namespace API.Controllers
         }
 
         [HttpGet("AllImmigrants")]
-        public async Task<ActionResult<IEnumerable<Immigrant>>> GetImmigrant()
+        public async Task<ActionResult<IEnumerable<Immigrant>>> GetImmigrants()
         {
             return await _context.Immigrants.ToListAsync();
         }
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Immigrant>> GetOneImmigrant(int id)
+        public async Task<ActionResult<Immigrant>> GetImmigrantById(int id)
         {
             return await _context.Immigrants.FindAsync(id);
         }
@@ -35,7 +35,7 @@ namespace API.Controllers
         [HttpPost("add_Immigrant")]
         public async Task<ActionResult<Employer>> AddImmigrant(ImmigrantsDto immigrantsDto)
         {
-
+            
             var immigrant = new Immigrant
             {
 
@@ -55,7 +55,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<IEnumerable<Immigrant>>> GetOneImmigrant(int id, ImmigrantsDto immigrantsDto)
+        public async Task<ActionResult<IEnumerable<Immigrant>>> UpdateImmigrant(int id, ImmigrantsDto immigrantsDto)
         {
             var OldImmgrant = await _context.Immigrants.FindAsync(id);
 
@@ -68,7 +68,7 @@ namespace API.Controllers
             OldImmgrant.Vulnerability = immigrantsDto.Vulnerability;
 
             await _context.SaveChangesAsync();
-            return await GetImmigrant();
+            return await GetImmigrants();
         }
 
         [HttpDelete("{id:int}")]
@@ -79,7 +79,7 @@ namespace API.Controllers
             _context.Immigrants.Remove(Immigrant);
             await _context.SaveChangesAsync();
 
-            return await GetImmigrant();
+            return await GetImmigrants();
         }
     }
 }
