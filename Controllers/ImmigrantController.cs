@@ -46,6 +46,7 @@ namespace API.Controllers
                 Nationality = immigrantsDto.Nationality,
                 PhoneNumber = immigrantsDto.PhoneNumber,
                 Vulnerability = immigrantsDto.Vulnerability,
+                locationId=immigrantsDto.LocalId
                 
 
             };
