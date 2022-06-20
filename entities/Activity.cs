@@ -9,6 +9,7 @@
         public string ActivityPlace { get; set; }
         public int ChefEquipeId { get; set; }
         public ChefEquipe ChefEquipe { get; set; }
+        
         public List<Immigrant> Immigrants { get; set; }
 
     }
