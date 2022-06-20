@@ -34,14 +34,13 @@ namespace API.Controllers
         public async Task<ActionResult<ActivityDto>> AddActivity(ActivityDto activityDto)
         {
             
-            
             var activity = new Activity
             {
                 ActivityName = activityDto.ActivityName,
                 ActivityDate = activityDto.ActivityDate,   
                 ActivityType = activityDto.ActivityType,
                 ActivityPlace = activityDto.ActivityPlace,
-                ChefEquipeId= activityDto.ChefEquipeId,
+                ChefEquipeId = activityDto.ChefEquipeId,
             };
 
             _context.Activities.Add(activity);
@@ -81,5 +80,13 @@ namespace API.Controllers
             return await GetActivity(id);
         }
 
+       /* Methode to get activities based on ChefEquipeId
+        * [HttpGet("Chef/{id:int}")]
+        public async Task<ActionResult<IEnumerable<Activity>>> GetActivitiesByChefId(int id)
+        {
+            var activities = await _context.Activities
+                .Where(c => c.ChefEquipeId == id).ToListAsync();
+            return activities;
+        }*/
     }
 }
