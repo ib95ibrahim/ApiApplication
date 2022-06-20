@@ -15,11 +15,29 @@ public class ChefEquipeController : BaseApiController
     {
         _context = context;
     }
+    
     [HttpGet("all_chefs")]
-    public async Task<ActionResult<IEnumerable<ChefEquipe>>> GetChefEquips()
+    public async Task<ActionResult<IEnumerable<ChefEquipe>>> GetChefsEquipe()
     {
         return await _context.ChefEquipes.ToListAsync();
     }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<ChefEquipe>> GetOneChefEquipe(int id)
+    {
+        return await _context.ChefEquipes.FindAsync(id);;
+    }
+    
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult<IEnumerable<ChefEquipe>>> RemoveChefEquip(int id)
+    {
+        var chef = await _context.ChefEquipes.FindAsync(id);
+          _context.ChefEquipes.Remove(chef);
+        await  _context.SaveChangesAsync();
+        return await GetChefsEquipe();
+
+    }
+
     [HttpPost("add_chef")]
     public async Task<ActionResult<IEnumerable<ChefEquipe>>> AddChefEquipe(ChefEquipeDto chefEquipeDto)
     {
@@ -38,6 +56,25 @@ public class ChefEquipeController : BaseApiController
         };
         _context.ChefEquipes.Add(chef);
         await _context.SaveChangesAsync();
-        return await _context.ChefEquipes.ToListAsync();
+        return await GetChefsEquipe();
     }
+    
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<IEnumerable<ChefEquipe>>> UpdateChefEquipe(int id,ChefEquipeDto chefEquipeDto)
+    {  
+        var OldchefEquipe = await _context.ChefEquipes.FindAsync(id);
+        
+        OldchefEquipe.EmployerType = chefEquipeDto.EmployerType!;
+        OldchefEquipe.TypeEquipe = chefEquipeDto.TypeEquipe;
+        OldchefEquipe.FirstName = chefEquipeDto.FirstName;
+        OldchefEquipe.LastName = chefEquipeDto.LastName;
+        OldchefEquipe.Email = chefEquipeDto.Email;
+        OldchefEquipe.Gender = chefEquipeDto.Gender;
+        OldchefEquipe.PhoneNumber = chefEquipeDto.PhoneNumber;
+        OldchefEquipe.UserName = chefEquipeDto.UserName;
+        //pass?
+        await _context.SaveChangesAsync();
+        return await GetChefsEquipe();
+    }
+    
 }
