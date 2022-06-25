@@ -29,10 +29,10 @@ public class EmployerController : BaseApiController
     }
     
     [HttpPost("add_employer")]
-    public async Task<ActionResult<Employer>> AddEmployer(RegisterEmployerDto registerEmployerDto)
+    public async Task<ActionResult<IEnumerable<Employer>>> AddEmployer(RegisterEmployerDto registerEmployerDto)
     {
         using var hmac = new HMACSHA512();
-        var employe = new Employer
+        var employee = new Employer
         {
            EmployerType = registerEmployerDto.EmployerType,
            FirstName = registerEmployerDto.FirstName,
@@ -46,9 +46,9 @@ public class EmployerController : BaseApiController
            PasswordSalt = hmac.Key
 
         };
-          _context.Employers.Add(employe);
+          _context.Employers.Add(employee);
           await _context.SaveChangesAsync();
-          return Ok("Done, employer added ! ");
+          return await GetEmployers();
     }
     
     [HttpPut("{id:int}")]
