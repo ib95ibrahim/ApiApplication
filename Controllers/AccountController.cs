@@ -39,11 +39,7 @@ public class AccountController : BaseApiController
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
-        return new UserDto
-        {
-            Username = user.UserName,
-            Token = _tokenService.CreateToken(user)
-        };
+        return Ok("Registration Successful !");
 
     }
 
