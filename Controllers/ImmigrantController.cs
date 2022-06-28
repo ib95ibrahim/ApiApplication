@@ -45,6 +45,7 @@ namespace API.Controllers
                 Gender = immigrantsDto.Gender,
                 Nationality = immigrantsDto.Nationality,
                 PhoneNumber = immigrantsDto.PhoneNumber,
+                Email = immigrantsDto.Email,
                 Vulnerability = immigrantsDto.Vulnerability,
                 locationId=immigrantsDto.LocalId
                 
@@ -67,6 +68,7 @@ namespace API.Controllers
             OldImmgrant.Nationality = immigrantsDto.Nationality;
             OldImmgrant.PhoneNumber = immigrantsDto.PhoneNumber;
             OldImmgrant.Vulnerability = immigrantsDto.Vulnerability;
+            OldImmgrant.Email = immigrantsDto.Email;
 
             await _context.SaveChangesAsync();
             return await GetImmigrants();

@@ -4,7 +4,7 @@
     {
         public int locationId { get; set; }
         public string locationName { get; set; }
-        public string CityLocation { get; set; }
+        public string LocationCity { get; set; }
       
 
     }

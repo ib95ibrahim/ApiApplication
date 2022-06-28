@@ -35,7 +35,7 @@ namespace API.Controllers
             var location = new Location
             {
 
-                LocationCity = LocationDto.CityLocation,
+                LocationCity = LocationDto.LocationCity,
                 LocationName = LocationDto.locationName
             };
 
@@ -63,7 +63,7 @@ namespace API.Controllers
             var location = await _context.Locations.FindAsync(id);
 
             location.LocationName = locationsDto.locationName;
-            location.LocationCity = locationsDto.CityLocation;
+            location.LocationCity = locationsDto.LocationCity;
             
 
             await _context.SaveChangesAsync();
