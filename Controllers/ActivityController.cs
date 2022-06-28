@@ -80,13 +80,13 @@ namespace API.Controllers
             return await GetActivity(id);
         }
 
-       /* Methode to get activities based on ChefEquipeId
-        * [HttpGet("Chef/{id:int}")]
+        //Methode to get activities based on ChefEquipeId
+         [HttpGet("Chef/{id:int}")]
         public async Task<ActionResult<IEnumerable<Activity>>> GetActivitiesByChefId(int id)
         {
             var activities = await _context.Activities
                 .Where(c => c.ChefEquipeId == id).ToListAsync();
             return activities;
-        }*/
+        }
     }
 }
