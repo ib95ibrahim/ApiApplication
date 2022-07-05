@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using API.entities;
 using API.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
@@ -10,17 +11,25 @@ namespace API.Services;
 
 public class TokenService : ITokenService
 {
+    private readonly UserManager<Person> _userManager;
     private readonly SymmetricSecurityKey _key;
-    public TokenService(IConfiguration config)
+    public TokenService(IConfiguration config ,UserManager<Person> userManager)
     {
+        _userManager = userManager;
         _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
     }
-   public string CreateToken(AppUser user)
+   public async Task<string> CreateToken(Person person)
    {
        var claims = new List<Claim>
        {
-           new Claim(JwtRegisteredClaimNames.NameId, user.UserName)
+           new Claim(JwtRegisteredClaimNames.NameId, person.Id.ToString()),
+           new Claim(JwtRegisteredClaimNames.UniqueName, person.UserName),
+           
        };
+       var roles = await _userManager.GetRolesAsync(person);
+       
+       claims.AddRange(roles.Select(role=>new Claim(ClaimTypes.Role,role)));
+       
       var cred = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
       var tokenDescriptor = new SecurityTokenDescriptor
       {
@@ -33,4 +42,5 @@ public class TokenService : ITokenService
       var token = tokenHandler.CreateToken(tokenDescriptor);
       return tokenHandler.WriteToken(token);
    }
+   
 }

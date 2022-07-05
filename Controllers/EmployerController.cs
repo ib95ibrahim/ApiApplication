@@ -1,8 +1,7 @@
-using System.Security.Cryptography;
-using System.Text;
 using API.Data;
 using API.DTOs;
 using API.entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,9 +9,13 @@ namespace API.Controllers;
 
 public class EmployerController : BaseApiController
 {
+    private readonly UserManager<Person> _userManager;
+    private readonly RoleManager<AppRole> _roleManager;
     private readonly DataContext _context;
-    public EmployerController(DataContext context)
+    public EmployerController(DataContext context, UserManager<Person> userManager,RoleManager<AppRole> roleManager)
     {
+        _userManager = userManager;
+        _roleManager = roleManager;
         _context = context;
     }
 
@@ -28,10 +31,15 @@ public class EmployerController : BaseApiController
         return await _context.Employers.FindAsync(id);
     }
     
+    
     [HttpPost("add_employer")]
     public async Task<ActionResult<IEnumerable<Employer>>> AddEmployer(RegisterEmployerDto registerEmployerDto)
     {
-        using var hmac = new HMACSHA512();
+        if (await CheckUsername(registerEmployerDto.UserName))
+        {
+            return BadRequest("Username already exists");
+        }
+
         var employee = new Employer
         {
            EmployerType = registerEmployerDto.EmployerType,
@@ -42,21 +50,28 @@ public class EmployerController : BaseApiController
            TypeEquipe = registerEmployerDto.TypeEquipe,
            PhoneNumber = registerEmployerDto.PhoneNumber,
            UserName = registerEmployerDto.UserName,
-           PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerEmployerDto.Password)),
-           PasswordSalt = hmac.Key
-
+           SecurityStamp = Guid.NewGuid().ToString()
         };
-          _context.Employers.Add(employee);
-          await _context.SaveChangesAsync();
-          return await GetEmployers();
+        
+      //  await _context.Employers.AddAsync(employee);
+        await _userManager.CreateAsync(employee, registerEmployerDto.Password);
+        await _userManager.AddToRoleAsync(employee, employee.EmployerType);
+        
+        return Ok("Registration Successful !");
     }
+    
+    
     
     [HttpPut("{id:int}")]
     public async Task<ActionResult<IEnumerable<Employer>>> UpdateEmployer(int id,RegisterEmployerDto employer)
     {  
         var OldEmployer = await _context.Employers.FindAsync(id);
+
+        var result = await _userManager.RemoveFromRoleAsync(OldEmployer, OldEmployer.EmployerType);
         
-        OldEmployer.EmployerType = employer.EmployerType!;
+        if (!result.Succeeded) Console.WriteLine("makhdamaax");
+
+        OldEmployer!.EmployerType = employer.EmployerType!;
         OldEmployer.TypeEquipe = employer.TypeEquipe;
         OldEmployer.FirstName = employer.FirstName;
         OldEmployer.LastName = employer.LastName;
@@ -64,9 +79,8 @@ public class EmployerController : BaseApiController
         OldEmployer.Gender = employer.Gender;
         OldEmployer.PhoneNumber = employer.PhoneNumber;
         OldEmployer.UserName = employer.UserName;
-        //pass?
         
-        await _context.SaveChangesAsync();
+        await _userManager.AddToRoleAsync(OldEmployer, employer.EmployerType);
         return await GetEmployers();
     }
 
@@ -79,5 +93,9 @@ public class EmployerController : BaseApiController
         await _context.SaveChangesAsync();
         
         return await GetEmployers();
+    }
+    private async Task<bool> CheckUsername(string username)
+    {
+        return await _userManager.Users.AnyAsync(p => p.UserName == username.ToLower());
     }
 }

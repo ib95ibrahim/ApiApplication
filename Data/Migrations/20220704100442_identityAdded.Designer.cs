@@ -4,16 +4,18 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace API.Migrations
+namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220704100442_identityAdded")]
+    partial class identityAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +36,7 @@ namespace API.Migrations
 
                     b.HasIndex("ImmigrantsId");
 
-                    b.ToTable("ActivityImmigrant", (string)null);
+                    b.ToTable("ActivityImmigrant");
                 });
 
             modelBuilder.Entity("API.entities.Activity", b =>
@@ -64,7 +66,7 @@ namespace API.Migrations
 
                     b.HasIndex("ChefEquipeId");
 
-                    b.ToTable("Activities", (string)null);
+                    b.ToTable("Activities");
                 });
 
             modelBuilder.Entity("API.entities.AppRole", b =>
@@ -141,7 +143,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations", (string)null);
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("API.entities.Person", b =>
@@ -244,7 +246,7 @@ namespace API.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("Rapports", (string)null);
+                    b.ToTable("Rapports");
                 });
 
             modelBuilder.Entity("API.entities.Service", b =>
@@ -260,7 +262,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Services", (string)null);
+                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("ImmigrantService", b =>
@@ -275,7 +277,7 @@ namespace API.Migrations
 
                     b.HasIndex("ServicesId");
 
-                    b.ToTable("ImmigrantService", (string)null);
+                    b.ToTable("ImmigrantService");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

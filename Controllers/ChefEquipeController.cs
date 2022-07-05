@@ -1,5 +1,4 @@
 using System.Security.Cryptography;
-using System.Text;
 using API.Data;
 using API.DTOs;
 using API.entities;
@@ -25,14 +24,14 @@ public class ChefEquipeController : BaseApiController
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ChefEquipe>> GetOneChefEquipe(int id)
     {
-        return await _context.ChefEquipes.FindAsync(id);;
+        return await _context.ChefEquipes.FindAsync(id);
     }
     
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<IEnumerable<ChefEquipe>>> RemoveChefEquip(int id)
     {
         var chef = await _context.ChefEquipes.FindAsync(id);
-          _context.ChefEquipes.Remove(chef);
+          _context.ChefEquipes.Remove(chef!);
         await  _context.SaveChangesAsync();
         return await GetChefsEquipe();
 
@@ -51,8 +50,6 @@ public class ChefEquipeController : BaseApiController
             Gender = chefEquipeDto.Gender,
             PhoneNumber = chefEquipeDto.PhoneNumber,
             UserName = chefEquipeDto.UserName,
-            PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(chefEquipeDto.Password)),
-            PasswordSalt = hmac.Key
         };
         _context.ChefEquipes.Add(chef);
         await _context.SaveChangesAsync();

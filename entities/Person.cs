@@ -1,13 +1,12 @@
-﻿namespace API.entities
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace API.entities
 {
-    public class Person
+    public class Person : IdentityUser<int>
     {
-        public int Id { get; set; } 
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Gender { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-
+        public ICollection<AppUserRole> UserRoles { get; set; }
     }
 }

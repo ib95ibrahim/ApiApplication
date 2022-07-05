@@ -1,9 +1,7 @@
-using System.Security.Cryptography;
-using System.Text;
-using API.Data;
 using API.DTOs;
 using API.entities;
 using API.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,64 +9,79 @@ namespace API.Controllers;
 
 public class AccountController : BaseApiController
 {
-    private readonly DataContext _context;
+    private readonly UserManager<Person> _userManager;
+    private readonly RoleManager<AppRole> _roleManager;
+    private readonly SignInManager<Person> _signInManager;
     private readonly ITokenService _tokenService;
 
-    public AccountController(DataContext context , ITokenService tokenService)
+    public AccountController(UserManager<Person> userManager, RoleManager<AppRole> roleManager,
+        SignInManager<Person> signInManager, ITokenService tokenService)
     {
-        _context = context;
+        _userManager = userManager;
+        _roleManager = roleManager;
+        _signInManager = signInManager;
         _tokenService = tokenService;
     }
 
+    
     [HttpPost("register")]
-    public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+    public async Task<ActionResult<PersonDto>> Register(RegisterDto registerDto)
     {
-        if (await CheckUsername(registerDto.Username))
+        if (await CheckUsername(registerDto.UserName))
         {
-            Console.WriteLine("done");
             return BadRequest("Username already exists");
         }
         
-        using var hmac = new HMACSHA512();
-        var user = new AppUser
+        var person = new Person
         {
-            UserName = registerDto.Username.ToLower(),
-            PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-            PasswordSalt = hmac.Key
+            FirstName = registerDto.FirstName,
+            LastName = registerDto.LastName,
+            Gender = registerDto.Gender,
+            UserName = registerDto.UserName,
         };
+        /*
+         
+           {"userName": "emm1",
+            "firstName": "string",
+            "lastName": "string",
+            "gender": "string" }
+            
+        */
+        await _userManager.CreateAsync(person, "App123@");
+        
+        await _userManager.AddToRoleAsync(person, "ChefEquipe");
+        
 
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-        return Ok("Registration Successful !");
+       // return Ok("Registration Successful !");
+        return new PersonDto
+        {
+            UserName = person.UserName,
+            Token = await _tokenService.CreateToken(person)
+        };
 
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+    public async Task<ActionResult<PersonDto>> Login(LoginDto loginDto)
     {
-        var user = await _context.Users.SingleOrDefaultAsync(user => user.UserName == loginDto.Username);
+        var person = await _userManager.Users.SingleOrDefaultAsync(person => person.UserName == loginDto.Username);
 
-        if (user == null) return Unauthorized("Invalid username ! ");
+        if (person == null) return Unauthorized("Invalid username ! ");
 
-        using var hmac = new HMACSHA512(user.PasswordSalt);
-        
-        var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
-        for (int i = 0; i < computedHash.Length; i++)
+        var result = await _signInManager.CheckPasswordSignInAsync(person, loginDto.Password, false);
+
+        if (!result.Succeeded) return Unauthorized("Invalid password !");
+
+        return new PersonDto
         {
-            if (computedHash[i] != user.PasswordHash[i])
-                return Unauthorized("Invalid password ! ");
-        }
-
-        return new UserDto
-        {
-            Username = user.UserName,
-            Token = _tokenService.CreateToken(user)
+            UserName = person.UserName,
+            Token = await _tokenService.CreateToken(person)
         };
 
     }
 
     private async Task<bool> CheckUsername(string username)
     {
-        return await _context.Users.AnyAsync(user => user.UserName == username.ToLower());
+        return await _userManager.Users.AnyAsync(p => p.UserName == username.ToLower());
     }
 }

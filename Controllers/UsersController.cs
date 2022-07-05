@@ -1,6 +1,7 @@
-using API.Data;
+using API.DTOs;
 using API.entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,24 +9,38 @@ namespace API.Controllers;
 
     public class UsersController : BaseApiController
     {
-        private readonly DataContext _context;
+        private readonly UserManager<Person> _userManager;
+        private readonly RoleManager<AppRole> _roleManager;
 
-        public UsersController(DataContext context)
+        public UsersController(UserManager<Person> userManager , RoleManager<AppRole> roleManager)
         {
-            _context = context;
+            _userManager = userManager;
+            _roleManager = roleManager; 
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Assistant")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
+        public async Task<List<Person>> GetUsers()
         {
-            return await  _context.Users.ToListAsync();           
+            return await _userManager.Users.ToListAsync();
         }
-
-        [Authorize]
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<AppUser>> GetUser(int id)
+        
+        
+        [HttpPost("add_user")]
+        public async Task<ActionResult<IEnumerable<Person>>> AddUser(RegisterDto registerDto)
         {
-            return await _context.Users.FindAsync(id);
+          
+            var user = new Person
+            {
+                FirstName = registerDto.FirstName,
+                LastName = registerDto.LastName,
+                Gender = registerDto.Gender,
+                UserName = registerDto.UserName,
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
+          //  await _userManager.AddToRoleAsync(user, "ChefEquipe");
+            await _userManager.CreateAsync(user , registerDto.Password);
+            return Ok("done");
         }
+        
     }

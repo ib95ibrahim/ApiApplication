@@ -52,8 +52,6 @@ public class AssistantController : BaseApiController
             Gender = assistantDto.Gender,
             PhoneNumber = assistantDto.PhoneNumber,
             UserName = assistantDto.UserName,
-            PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(assistantDto.Password)),
-            PasswordSalt = hmac.Key
         };
         _context.Assistants.Add(assistant);
         await _context.SaveChangesAsync();
