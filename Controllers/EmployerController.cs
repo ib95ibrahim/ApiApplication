@@ -53,11 +53,11 @@ public class EmployerController : BaseApiController
            SecurityStamp = Guid.NewGuid().ToString()
         };
         
-      //  await _context.Employers.AddAsync(employee);
+        //await _context.Employers.AddAsync(employee);
         await _userManager.CreateAsync(employee, registerEmployerDto.Password);
-        await _userManager.AddToRoleAsync(employee, employee.EmployerType);
+        await _userManager.AddToRoleAsync(employee, registerEmployerDto.EmployerType);
         
-        return Ok("Registration Successful !");
+        return await GetEmployers();
     }
     
     
