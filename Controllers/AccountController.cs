@@ -62,7 +62,7 @@ public class AccountController : BaseApiController
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<PersonDto>> Login(LoginDto loginDto)
+    public async Task<ActionResult<ReturnDto>> Login(LoginDto loginDto)
     {
         var person = await _userManager.Users.SingleOrDefaultAsync(person => person.UserName == loginDto.Username);
 
@@ -71,10 +71,11 @@ public class AccountController : BaseApiController
         var result = await _signInManager.CheckPasswordSignInAsync(person, loginDto.Password, false);
 
         if (!result.Succeeded) return Unauthorized("Invalid password !");
-
-        return new PersonDto
-        {
-            UserName = person.UserName,
+        
+        return new ReturnDto
+        {   
+            Role = await _userManager.GetRolesAsync(person),
+            Username = person.UserName,
             Token = await _tokenService.CreateToken(person)
         };
 
