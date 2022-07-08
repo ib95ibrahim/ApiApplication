@@ -33,7 +33,7 @@ namespace API.Controllers
         }
 
         [HttpPost("add_Immigrant")]
-        public async Task<ActionResult<Employer>> AddImmigrant(ImmigrantsDto immigrantsDto)
+        public async Task<ActionResult<Immigrant>> AddImmigrant(ImmigrantsDto immigrantsDto)
         {
             
             var immigrant = new Immigrant

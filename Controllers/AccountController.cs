@@ -74,7 +74,7 @@ public class AccountController : BaseApiController
         
         return new ReturnDto
         {   
-            Role = await _userManager.GetRolesAsync(person),
+          //  Role = await _userManager.GetRolesAsync(person),
             Username = person.UserName,
             Token = await _tokenService.CreateToken(person)
         };

@@ -40,7 +40,7 @@ namespace API.Controllers
                 ActivityDate = activityDto.ActivityDate,   
                 ActivityType = activityDto.ActivityType,
                 ActivityPlace = activityDto.ActivityPlace,
-                ChefEquipeId = activityDto.ChefEquipeId,
+                EmployerId = activityDto.EmployerId
             };
 
             _context.Activities.Add(activity);
@@ -80,12 +80,12 @@ namespace API.Controllers
             return await GetActivity(id);
         }
 
-        //Methode to get activities based on ChefEquipeId
-         [HttpGet("Chef/{id:int}")]
-        public async Task<ActionResult<IEnumerable<Activity>>> GetActivitiesByChefId(int id)
+        //Methode to get activities based on employerId
+         [HttpGet("employer/{id:int}")]
+        public async Task<ActionResult<IEnumerable<Activity>>> GetActivitiesByEmployerId(int id)
         {
             var activities = await _context.Activities
-                .Where(c => c.ChefEquipeId == id).ToListAsync();
+                .Where(c => c.EmployerId == id).ToListAsync();
             return activities;
         }
     }

@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using API.entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

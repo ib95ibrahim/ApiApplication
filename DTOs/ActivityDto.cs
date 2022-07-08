@@ -6,7 +6,7 @@
         public string ActivityDate { get; set; }
         public string ActivityType { get; set; }
         public string ActivityPlace { get; set; }
-        public int ChefEquipeId { get; set; }
+        public int EmployerId { get; set; }
 
     }
 }
