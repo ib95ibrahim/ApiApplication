@@ -76,7 +76,9 @@ public class AccountController : BaseApiController
         {   
           //  Role = await _userManager.GetRolesAsync(person),
             Username = person.UserName,
-            Token = await _tokenService.CreateToken(person)
+            Token = await _tokenService.CreateToken(person),
+            Name = person.FirstName +' '+ person.LastName
+
         };
 
     }
