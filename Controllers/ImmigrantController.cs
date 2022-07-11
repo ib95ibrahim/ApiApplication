@@ -33,7 +33,7 @@ namespace API.Controllers
         }
 
         [HttpPost("add_Immigrant")]
-        public async Task<ActionResult<Immigrant>> AddImmigrant(ImmigrantsDto immigrantsDto)
+        public async Task<ActionResult<IEnumerable<Immigrant>>> AddImmigrant(ImmigrantsDto immigrantsDto)
         {
             
             var immigrant = new Immigrant
@@ -53,7 +53,7 @@ namespace API.Controllers
             };
             _context.Immigrants.Add(immigrant);
             await _context.SaveChangesAsync();
-            return Ok("Bravo ! Beneficiaire bien ajouté ");
+            return await GetImmigrants();
         }
 
         [HttpPut("{id:int}")]
