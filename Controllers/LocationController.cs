@@ -28,7 +28,7 @@ namespace API.Controllers
         }
 
         [HttpPost("Add_Location")]
-        public async Task<ActionResult<LocationsDto>> AddLocation(LocationsDto LocationDto)
+        public async Task<ActionResult<IEnumerable<Location>>> AddLocation(LocationsDto LocationDto)
         {
 
 
@@ -41,7 +41,7 @@ namespace API.Controllers
 
             _context.Locations.Add(location);
             await _context.SaveChangesAsync();
-            return Ok("Bravo ! Location bien ajouté ");
+            return await Getlocations();
 
 
         }
