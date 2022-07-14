@@ -31,7 +31,7 @@ namespace API.Controllers
         }
 
         [HttpPost("Add_Activity")]
-        public async Task<ActionResult<ActivityDto>> AddActivity(ActivityDto activityDto)
+        public async Task<ActionResult<IEnumerable<Activity>>> AddActivity(ActivityDto activityDto)
         {
             
             var activity = new Activity
@@ -45,14 +45,7 @@ namespace API.Controllers
 
             _context.Activities.Add(activity);
             await _context.SaveChangesAsync();
-
-            return new ActivityDto
-            {
-                ActivityName = activity.ActivityName,
-                ActivityDate = activity.ActivityDate,
-                ActivityType = activity.ActivityType,
-                ActivityPlace = activity.ActivityPlace
-            };
+            return await GetActivities();
         }
 
         [HttpDelete("{id:int}")]
