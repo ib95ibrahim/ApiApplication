@@ -60,7 +60,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<Activity>> UpdateActivity(int id, ActivityDto activityDto)
+        public async Task<ActionResult<IEnumerable<Activity>>> UpdateActivity(int id, ActivityDto activityDto)
         {
             var activity = await _context.Activities.FindAsync(id);
 
@@ -70,7 +70,7 @@ namespace API.Controllers
             activity.ActivityPlace = activityDto.ActivityPlace;
 
             await _context.SaveChangesAsync();
-            return await GetActivity(id);
+            return await GetActivities();
         }
 
         //Methode to get activities based on employerId
