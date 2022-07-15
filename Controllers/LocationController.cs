@@ -58,7 +58,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<Location>> UpdateLocation(int id, LocationsDto locationsDto)
+        public async Task<ActionResult<IEnumerable<Location>>> UpdateLocation(int id, LocationsDto locationsDto)
         {
             var location = await _context.Locations.FindAsync(id);
 
@@ -67,7 +67,7 @@ namespace API.Controllers
             
 
             await _context.SaveChangesAsync();
-            return await GetLocationById(id);
+            return await Getlocations();
         }
 
     }
